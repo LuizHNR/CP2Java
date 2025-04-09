@@ -13,7 +13,7 @@ public class Jogos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private Date dataLançamento;
+    private Date dataLancamento;
     private Genero genero;
     @ManyToMany(mappedBy = "jogos")
     private List<Usuario> usuarios;
@@ -34,12 +34,12 @@ public class Jogos {
         this.nome = nome;
     }
 
-    public Date getDataLançamento() {
-        return dataLançamento;
+    public Date getDataLancamento() {
+        return dataLancamento;
     }
 
-    public void setDataLançamento(Date dataLançamento) {
-        this.dataLançamento = dataLançamento;
+    public void setDataLancamento(Date dataLancamento) {
+        this.dataLancamento = dataLancamento;
     }
 
     public Genero getGenero() {
