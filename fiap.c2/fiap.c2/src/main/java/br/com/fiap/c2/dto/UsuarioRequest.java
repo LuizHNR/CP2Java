@@ -1,6 +1,9 @@
 package br.com.fiap.c2.dto;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.validation.constraints.*;
+
+import java.util.List;
 
 public class UsuarioRequest {
     @NotBlank(message = "O nome é obrigatório")
@@ -16,6 +19,10 @@ public class UsuarioRequest {
             message = "A senha deve conter no mínimo 8 caracteres, letras maiúsculas e minúsculas, números e caracteres especiais (@!,#)")
     private String senha;
 
+    @ElementCollection
+    private List<Long> jogosIds;
+
+
     public UsuarioRequest() {
     }
 
@@ -24,7 +31,6 @@ public class UsuarioRequest {
         this.idade = idade;
         this.email = email;
         this.senha = senha;
-
     }
 
     public String getNome() {
@@ -57,5 +63,13 @@ public class UsuarioRequest {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public List<Long> getJogosIds() {
+        return jogosIds;
+    }
+
+    public void setJogosIds(List<Long> jogosIds) {
+        this.jogosIds = jogosIds;
     }
 }

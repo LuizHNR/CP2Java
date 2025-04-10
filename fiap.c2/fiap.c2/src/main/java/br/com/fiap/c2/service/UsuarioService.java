@@ -1,11 +1,11 @@
 package br.com.fiap.c2.service;
 
-
-
 import br.com.fiap.c2.controller.UsuarioController;
 import br.com.fiap.c2.dto.UsuarioRequest;
 import br.com.fiap.c2.dto.UsuarioResponse;
+import br.com.fiap.c2.model.Jogo;
 import br.com.fiap.c2.model.Usuario;
+import br.com.fiap.c2.repository.JogoRepository;
 import br.com.fiap.c2.repository.UsuarioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,54 +20,49 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class UsuarioService {
+
     private final UsuarioRepository usuarioRepository;
+    private final JogoRepository jogoRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, JogoRepository jogoRepository) {
         this.usuarioRepository = usuarioRepository;
-    }
-//    @Autowired
-//    ClienteRepository clienteRepository;
-
-    public Usuario requestToCliente(UsuarioRequest clienteRequest) {
-        return new Usuario(null,
-                clienteRequest.getNome(),
-                clienteRequest.getIdade(),
-                clienteRequest.getEmail(),
-                clienteRequest.getSenha());
+        this.jogoRepository = jogoRepository;
     }
 
-    public UsuarioRequest usuarioToResponse(Usuario usuario, boolean self) {
-        Link link;
-        if (self) {
-            link = linkTo(
-                    methodOn(
-                            UsuarioController.class
-                    ).readCliente(usuario.getId())
-            ).withSelfRel();
-        } else {
-            link = linkTo(
-                    methodOn(
-                            UsuarioController.class
-                    ).readClientes(0)
-            ).withRel("Lista de Usuarios");
+    public Usuario requestToUsuario(UsuarioRequest request) {
+        List<Jogo> jogos = new ArrayList<>();
+        if (request.getJogosIds() != null && !request.getJogosIds().isEmpty()) {
+            jogos = jogoRepository.findAllById(request.getJogosIds());
         }
+
+        return new Usuario(
+                null,
+                request.getNome(),
+                request.getIdade(),
+                request.getEmail(),
+                request.getSenha(),
+                jogos
+        );
+    }
+
+    public UsuarioResponse usuarioToResponse(Usuario usuario, boolean self) {
+        Link link = self
+                ? linkTo(methodOn(UsuarioController.class).readUsuario(usuario.getId())).withSelfRel()
+                : linkTo(methodOn(UsuarioController.class).readUsuarios(0)).withRel("Lista de Usuarios");
+
         return new UsuarioResponse(usuario.getId(), usuario.getNome(), link);
     }
 
-    public List<ClienteResponse> clientesToResponse(List<Cliente> clientes) {
-        List<ClienteResponse> clientesResponse = new ArrayList<>();
-        for (Cliente cliente : clientes) {
-            clientesResponse.add(clienteToResponse(cliente, true));
+    public List<UsuarioResponse> usuariosToResponse(List<Usuario> usuarios) {
+        List<UsuarioResponse> usuarioResponseList = new ArrayList<>();
+        for (Usuario usuario : usuarios) {
+            usuarioResponseList.add(usuarioToResponse(usuario, true));
         }
-        return clientesResponse;
-        // return clientes.stream().map(this::clienteToResponse).collect(Collectors.toList());
+        return usuarioResponseList;
     }
 
-    public Page<ClienteResponse> findAll(Pageable pageable) {
-        // busca os clientes de acordo com a configuração do pageable,
-        // converte para response e retorna como um Page<ClienteResponse>
-        return clienteRepository.findAll(pageable)
-                .map(cliente -> clienteToResponse(cliente, true));
-        //return clienteRepository.findAll(pageable).map(this::clienteToResponse);
+    public Page<UsuarioResponse> findAll(Pageable pageable) {
+        return usuarioRepository.findAll(pageable)
+                .map(usuario -> usuarioToResponse(usuario, true));
     }
 }

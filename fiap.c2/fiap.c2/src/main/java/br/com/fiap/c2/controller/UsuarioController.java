@@ -1,102 +1,111 @@
 package br.com.fiap.c2.controller;
 
 import br.com.fiap.c2.dto.UsuarioRequest;
+import br.com.fiap.c2.dto.UsuarioResponse;
 import br.com.fiap.c2.model.Usuario;
 import br.com.fiap.c2.repository.UsuarioRepository;
 import br.com.fiap.c2.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value ="/usuarios", produces = {"application/json"})
+@Tag(name = "api-usuarios")
 public class UsuarioController {
     @Autowired
     UsuarioRepository usuarioRepository;
     @Autowired
     UsuarioService usuarioService;
 
-    // Create, Read, Update, Delete - CRUD
-    // Post, Get, Put, Delete - Verbos HTTP correspondentes
 
     @Operation(summary = "Cria um novo usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Cliente cadastrado com sucesso",
+            @ApiResponse(responseCode = "201", description = "Usuario cadastrado com sucesso",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Usuario.class))}),
             @ApiResponse(responseCode = "400", description = "Atributos informados são inválidos",
                     content = @Content(schema = @Schema()))
     })
     @PostMapping
-    public ResponseEntity<Usuario> createCliente(@Valid @RequestBody UsuarioRequest usuario) {
-        Cliente clienteSalvo = clienteRepository.save(clienteService.requestToCliente(cliente));
-        return new ResponseEntity<>(clienteSalvo, HttpStatus.CREATED);
+    public ResponseEntity<Usuario> createUsuario(@Valid @RequestBody UsuarioRequest usuario) {
+        Usuario usuarioSalvo = usuarioRepository.save(usuarioService.requestToUsuario(usuario));
+        return new ResponseEntity<>(usuarioSalvo, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Retorna uma lista de clientes")
+    @Operation(summary = "Retorna uma lista de usuarios")
     @GetMapping
-    public ResponseEntity<Page<ClienteResponse>> readClientes(@RequestParam(defaultValue = "0") Integer page) {
-        Pageable pageable = PageRequest.of(page, 2, Sort.by("categoria").ascending().and(Sort.by("nome").ascending()));
-        return new ResponseEntity<>(clienteService.findAll(pageable), HttpStatus.OK);
+    public ResponseEntity<Page<UsuarioResponse>> readUsuarios(@RequestParam(defaultValue = "0") Integer page) {
+        Pageable pageable = PageRequest.of(page, 2, (Sort.by("nome").ascending()));
+        return new ResponseEntity<>(usuarioService.findAll(pageable), HttpStatus.OK);
     }
 
-    // PathVariable = parâmetro diretamente na URL, ex: /clientes/1
-    // RequestParam = parâmetro como query, ex: /clientes/?id=1
-    @Operation(summary = "Retorna um cliente por ID")
+    @Operation(summary = "Retorna um usuario por ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente encontrado com sucesso",
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado com sucesso",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "Nenhum cliente encontrado",
+                            schema = @Schema(implementation = UsuarioResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Nenhum usuario encontrado",
                     content = @Content(schema = @Schema()))
     })
     @GetMapping("/{id}")
-    public Class<?> readCliente(@PathVariable Long id) {
-        Optional<Cliente> cliente = clienteRepository.findById(id);
-        if (cliente.isEmpty()) {
+    public ResponseEntity<UsuarioResponse> readUsuario(@PathVariable Long id) {
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        if (usuario.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(clienteService.clienteToResponse(cliente.get(), false), HttpStatus.OK);
+        return new ResponseEntity<>(usuarioService.usuarioToResponse(usuario.get(), false), HttpStatus.OK);
     }
 
-    @Operation(summary = "Atualiza um cliente existente")
+    @Operation(summary = "Atualiza um usuario existente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Cliente encontrado e atualizado com sucesso",
+            @ApiResponse(responseCode = "201", description = "Usuario encontrado e atualizado com sucesso",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Cliente.class))}),
-            @ApiResponse(responseCode = "400", description = "Nenhum cliente encontrado para atualizar",
+                            schema = @Schema(implementation = Usuario.class))}),
+            @ApiResponse(responseCode = "400", description = "Nenhum usuario encontrado para atualizar",
                     content = @Content(schema = @Schema()))
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id,
-                                                 @RequestBody Cliente cliente) {
-        Optional<Cliente> clienteExistente = clienteRepository.findById(id);
-        if (clienteExistente.isEmpty()) {
+    public ResponseEntity<Usuario> updateUsuario(@PathVariable Long id,
+                                                 @RequestBody Usuario usuario) {
+        Optional<Usuario> usuarioExistente = usuarioRepository.findById(id);
+        if (usuarioExistente.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        cliente.setId(clienteExistente.get().getId());
-        Cliente clienteAtualizado = clienteRepository.save(cliente);
-        return new ResponseEntity<>(clienteAtualizado, HttpStatus.CREATED);
+        usuario.setId(usuarioExistente.get().getId());
+        Usuario usuarioAtualizado = usuarioRepository.save(usuario);
+        return new ResponseEntity<>(usuarioAtualizado, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Exclui um cliente por ID")
+    @Operation(summary = "Exclui um usuario por ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "400", description = "Nenhum cliente encontrado para excluir",
+            @ApiResponse(responseCode = "400", description = "Nenhum usuario encontrado para excluir",
                     content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "204", description = "Cliente excluído com sucesso",
+            @ApiResponse(responseCode = "204", description = "Usuario excluído com sucesso",
                     content = @Content(schema = @Schema()))
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
-        Optional<Cliente> clienteExistente = clienteRepository.findById(id);
-        if (clienteExistente.isEmpty()) {
+        Optional<Usuario> usuarioExistente = usuarioRepository.findById(id);
+        if (usuarioExistente.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        clienteRepository.deleteById(id);
+        usuarioRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

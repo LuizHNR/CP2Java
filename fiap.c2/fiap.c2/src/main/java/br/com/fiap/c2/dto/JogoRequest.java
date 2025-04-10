@@ -3,22 +3,23 @@ package br.com.fiap.c2.dto;
 import br.com.fiap.c2.model.Genero;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
-public class JogosRequest {
+public class JogoRequest {
     @NotBlank(message = "O nome é obrigatório")
     @Size(min = 3, max = 150,
             message = "O nome deve ter entre 3 e 150 caracteres")
     private String nome;
     @NotNull(message = "A data de Lançamento é obrigatório")
-    private Date dataLancamento;
+    private LocalDate dataLancamento;
     @NotNull(message = "O genero é obrigatório")
     private Genero genero;
 
-    public JogosRequest() {
+    public JogoRequest() {
     }
 
-    public JogosRequest(String nome, Date dataLancamento, Genero genero) {
+    public JogoRequest(String nome, LocalDate dataLancamento, Genero genero) {
         this.nome = nome;
         this.dataLancamento = dataLancamento;
         this.genero = genero;
@@ -33,11 +34,11 @@ public class JogosRequest {
         this.nome = nome;
     }
 
-    public Date getDataLancamento() {
+    public LocalDate getDataLancamento() {
         return dataLancamento;
     }
 
-    public void setDataLancamento(Date dataLancamento) {
+    public void setDataLancamento(LocalDate dataLancamento) {
         this.dataLancamento = dataLancamento;
     }
 
