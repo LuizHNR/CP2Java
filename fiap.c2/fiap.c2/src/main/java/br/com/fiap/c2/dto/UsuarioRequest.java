@@ -20,7 +20,7 @@ public class UsuarioRequest {
     private String senha;
 
     @ElementCollection
-    private List<Long> jogosIds;
+    private List<Long> carrinho;
 
 
     public UsuarioRequest() {
@@ -65,11 +65,11 @@ public class UsuarioRequest {
         this.senha = senha;
     }
 
-    public List<Long> getJogosIds() {
-        return jogosIds;
+    public List<Long> getCarrinho() {
+        return carrinho;
     }
 
-    public void setJogosIds(List<Long> jogosIds) {
-        this.jogosIds = jogosIds;
+    public void setCarrinho(List<Long> carrinho) {
+        this.carrinho = carrinho;
     }
 }

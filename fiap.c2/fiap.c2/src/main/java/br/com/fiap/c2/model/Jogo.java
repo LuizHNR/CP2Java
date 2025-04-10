@@ -19,14 +19,6 @@ public class Jogo {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    public Jogo(Long id, String nome, LocalDate dataLancamento, Genero genero, Usuario usuarios) {
-        this.id = id;
-        this.nome = nome;
-        this.dataLancamento = dataLancamento;
-        this.genero = genero;
-        this.usuario = usuarios;
-    }
-
     public Jogo(Long id, String nome, LocalDate dataLancamento, Genero genero) {
         this.id = id;
         this.nome = nome;

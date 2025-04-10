@@ -31,8 +31,8 @@ public class UsuarioService {
 
     public Usuario requestToUsuario(UsuarioRequest request) {
         List<Jogo> jogos = new ArrayList<>();
-        if (request.getJogosIds() != null && !request.getJogosIds().isEmpty()) {
-            jogos = jogoRepository.findAllById(request.getJogosIds());
+        if (request.getCarrinho() != null && !request.getCarrinho().isEmpty()) {
+            jogos = jogoRepository.findAllById(request.getCarrinho());
         }
 
         return new Usuario(
