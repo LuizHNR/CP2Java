@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @SpringBootApplication
 @EntityScan(basePackages = "br.com.fiap.c2.model")
 @OpenAPIDefinition(info =
-@Info(title = "API de Clientes", description = "Exemplo de API RESTful com Swagger", version = "v1"))
+@Info(title = "API de Steam", description = "Exemplo de API de Steam com Swagger", version = "v1"))
 public class Luizinho123Application {
 
 	public static void main(String[] args) {

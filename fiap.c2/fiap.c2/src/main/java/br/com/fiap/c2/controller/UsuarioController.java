@@ -100,7 +100,7 @@ public class UsuarioController {
                     content = @Content(schema = @Schema()))
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) {
         Optional<Usuario> usuarioExistente = usuarioRepository.findById(id);
         if (usuarioExistente.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

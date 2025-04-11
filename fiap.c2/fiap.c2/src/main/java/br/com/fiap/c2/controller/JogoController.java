@@ -42,11 +42,13 @@ public class JogoController {
             @ApiResponse(responseCode = "400", description = "Atributos informados são inválidos",
                     content = @Content(schema = @Schema()))
     })
+
     @PostMapping
     public ResponseEntity<Jogo> createJogo(@Valid @RequestBody JogoRequest jogo) {
         Jogo jogoSalvo = jogoRepository.save(jogoService.requestToJogo(jogo));
         return new ResponseEntity<>(jogoSalvo, HttpStatus.CREATED);
     }
+
 
     @Operation(summary = "Retorna uma lista de jogos")
     @GetMapping
@@ -63,6 +65,7 @@ public class JogoController {
             @ApiResponse(responseCode = "404", description = "Nenhum jogo encontrado",
                     content = @Content(schema = @Schema()))
     })
+
     @GetMapping("/{id}")
     public ResponseEntity<JogoResponse> readJogo(@PathVariable Long id) {
         Optional<Jogo> jogo = jogoRepository.findById(id);
@@ -80,6 +83,7 @@ public class JogoController {
             @ApiResponse(responseCode = "400", description = "Nenhum jogo encontrado para atualizar",
                     content = @Content(schema = @Schema()))
     })
+
     @PutMapping("/{id}")
     public ResponseEntity<Jogo> updateJogo(@PathVariable Long id, @RequestBody Jogo jogo) {
         Optional<Jogo> jogoExistente = jogoRepository.findById(id);
